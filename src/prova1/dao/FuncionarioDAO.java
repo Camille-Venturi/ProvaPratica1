@@ -26,7 +26,7 @@ public class FuncionarioDAO {
 
             // Validar matrícula (exemplo simples)
             if (!funcionario.getMatricula().matches("F\\d{3}")) {
-                System.err.println("Erro: Matrícula inválida. Use o formato F123.");
+                System.err.println("Erro: Matrícula inválida. Use o formato ex:F001.");
                 return;
             }
 
