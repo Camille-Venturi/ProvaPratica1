@@ -12,7 +12,6 @@ public class Funcionario extends Pessoa {
         this.departamento = departamento;
     }
 
-    // Getters e setters
     public String getMatricula() { return matricula; }
     public void setMatricula(String matricula) { this.matricula = matricula; }
     public String getDepartamento() { return departamento; }
