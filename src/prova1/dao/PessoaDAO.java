@@ -59,6 +59,19 @@ public class PessoaDAO {
     
     public void deletar(int id) throws SQLException {
         try (Connection conn = ConnectionFactory.getConnection()) {
+            // Primeiro, verifique se a pessoa é um funcionário
+            String verificaFuncionario = "SELECT 1 FROM funcionario WHERE id = ?";
+            try (PreparedStatement checkStmt = conn.prepareStatement(verificaFuncionario)) {
+                checkStmt.setInt(1, id);
+                ResultSet rs = checkStmt.executeQuery();
+                if (rs.next()) {
+                    System.out.println("Não é possível excluir esta pessoa porque ela está cadastrada como funcionário.");
+                    System.out.println("Remova o vínculo de funcionário antes de excluir a pessoa.");
+                    return;
+                }
+            }
+
+            // Se não for funcionário, pode excluir normalmente
             String sql = "DELETE FROM pessoa WHERE id = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, id);
@@ -70,6 +83,24 @@ public class PessoaDAO {
                 }
             }
         }
+    }
+    
+    public Pessoa buscarPorId(int id) throws SQLException {
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            String sql = "SELECT id, nome, email FROM pessoa WHERE id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, id);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    return new Pessoa(
+                        rs.getInt("id"),
+                        rs.getString("nome"),
+                        rs.getString("email")
+                    );
+                }
+            }
+        }
+        return null; // Não encontrado
     }
     
 }

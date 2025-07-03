@@ -12,21 +12,23 @@ import prova1.model.Pessoa;
 import prova1.model.Projeto;
 
 public class Main {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SQLException {
 		Scanner input = new Scanner(System.in);
 		PessoaDAO pessoaDAO = new PessoaDAO();
 		FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
 		ProjetoDAO projetoDAO = new ProjetoDAO();
+		List<Funcionario> funcionarios = funcionarioDAO.listar();
 
 		while (true) {
 			System.out.println("===== MENU =====");
 			System.out.println("1. Cadastrar pessoa");
 			System.out.println("2. Listar funcionários");
-			System.out.println("3. Listar projetos cadastrados");
-			System.out.println("4. Excluir funcionário");
-			System.out.println("5. Excluir projeto");
-			System.out.println("6. Listar pessoas");
-			System.out.println("7. Excluir pessoa");
+			System.out.println("3. Cadastrar funcionário");
+			System.out.println("4. Listar projetos cadastrados");
+			System.out.println("5. Excluir funcionário");
+			System.out.println("6. Excluir projeto");
+			System.out.println("7. Cadastrar projeto");
+			System.out.println("8. Excluir pessoa (só para teste)");
 			System.out.println("0. Sair");
 			System.out.print("Escolha uma opção: ");
 			int opcao = input.nextInt();
@@ -42,36 +44,52 @@ public class Main {
 					String email = input.nextLine();
 					Pessoa p = new Pessoa(0, nome, email);
 					pessoaDAO.inserir(p);
-					int idPessoa = p.getId();
-					if (idPessoa == 0) {
-						idPessoa = pessoaDAO.buscarIdPorEmail(email); // Implemente este método se quiser
-					}
-					// agora caso precise adcionar um funcionario
-					System.out.print("Matrícula (formato F123): ");
-					String matricula = input.nextLine();
-					System.out.print("Departamento: ");
-					String departamento = input.nextLine();
-					Funcionario f = new Funcionario(idPessoa, nome, email, matricula, departamento);
-					funcionarioDAO.inserir(f);
-					break;
 				case 2:
 					// Listar funcionários
-					List<Funcionario> funcionarios = funcionarioDAO.listar();
+					
 					for (Funcionario func : funcionarios) {
 						System.out.println("ID: " + func.getId() + ", Nome: " + func.getNome() + ", Email: "
 								+ func.getEmail() + ", Matrícula: " + func.getMatricula() + ", Departamento: "
 								+ func.getDepartamento());
 					}
 					break;
-				/*
-				 * case 3: //Buscar funcionario por id
-				 * System.out.print("Digite o email da pessoa: "); String emailBusca =
-				 * input.nextLine(); int idEncontrado = pessoaDAO.buscarIdPorEmail(emailBusca);
-				 * if (idEncontrado > 0) { System.out.println("ID encontrado: " + idEncontrado);
-				 * } else { System.out.println("Pessoa não encontrada com esse email."); }
-				 * break;
-				 */
+					
 				case 3:
+					
+					System.out.println("Pessoas disponíveis para adicionar");
+					List<Pessoa> pessoas = pessoaDAO.listar();
+					for (Pessoa pessoa : pessoas) {
+						System.out.println("ID: " + pessoa.getId() + ", Nome: " + pessoa.getNome() + ", Email: "
+								+ pessoa.getEmail());
+					}
+					
+					System.out.println("Insira o id da pessoa:");
+					int idTemp = input.nextInt();
+					
+					Pessoa pessoa = pessoaDAO.buscarPorId(idTemp);
+
+					if (pessoa == null) {
+					    System.out.println("Pessoa não encontrada. Cadastre-a primeiro como pessoa.");
+					} else {
+					    System.out.println("Pessoa encontrada: " + pessoa.getNome() + " (ID: " + pessoa.getId() + ")");
+					    System.out.print("Digite o departamento do funcionário: ");
+					    String departamento = input.nextLine();
+
+					    String matricula = "F" + pessoa.getId();
+
+					    Funcionario funcionario = new Funcionario(
+					        pessoa.getId(),
+					        pessoa.getNome(),
+					        pessoa.getEmail(),
+					        matricula,
+					        departamento
+					    );
+					    funcionarioDAO.inserir(funcionario);
+
+					    System.out.println("Funcionário cadastrado com sucesso! Matrícula: " + matricula);
+					}
+					break;
+				case 4:
 					// Listar projetos
 					List<Projeto> projetos = projetoDAO.listar();
 					for (Projeto proj : projetos) {
@@ -79,52 +97,64 @@ public class Main {
 								+ proj.getDescricao() + ", ID Funcionário: " + proj.getIdFuncionario());
 					}
 					break;
-				/*
-				 * case 5: // Buscar projeto por ID
-				 * System.out.print("Digite o ID do projeto: "); int idProj = input.nextInt();
-				 * Projeto proj = projetoDAO.buscarPorId(idProj); if (proj != null) {
-				 * System.out.println("ID: " + proj.getId() + ", Nome: " + proj.getNome() +
-				 * ", Descrição: " + proj.getDescricao() + ", ID Funcionário: " +
-				 * proj.getIdFuncionario()); } else {
-				 * System.out.println("Projeto não encontrado."); } break;
-				 */
-				case 4:
+				case 5:
 					// Excluir funcionário
+					List<Funcionario> funcionarioL = funcionarioDAO.listar();
+					for (Funcionario func : funcionarioL) {
+						System.out.println("ID: " + func.getId() + ", Nome: " + func.getNome() + ", Email: "
+								+ func.getEmail() + ", Matrícula: " + func.getMatricula() + ", Departamento: "
+								+ func.getDepartamento());
+					}
 					System.out.print("ID do funcionário a excluir: ");
 					int idFuncionario = input.nextInt();
 					funcionarioDAO.deletar(idFuncionario);
 					break;
 
-				case 5:
+				case 6:
 					// Excluir projeto
 					System.out.print("ID do projeto a excluir: ");
 					int idProjeto = input.nextInt();
 					projetoDAO.deletar(idProjeto);
 					break;
-
-				case 6:
-					// Listar pessoas
-					List<Pessoa> pessoas = pessoaDAO.listar();
-					for (Pessoa pessoa : pessoas) {
-						System.out.println("ID: " + pessoa.getId() + ", Nome: " + pessoa.getNome() + ", Email: "
-								+ pessoa.getEmail());
-					}
-					break;
-				/*
-				 * case 9: // Buscar pessoa por ID System.out.print("Digite o ID da pessoa: ");
-				 * int idPessoaBusca = input.nextInt(); Pessoa pessoa =
-				 * pessoaDAO.buscarIdPorEmail(idPessoaBusca); if (pessoa != null) {
-				 * System.out.println("ID: " + pessoa.getId() + ", Nome: " + pessoa.getNome() +
-				 * ", Email: " + pessoa.getEmail()); } else {
-				 * System.out.println("Pessoa não encontrada."); } break;
-				 *
+					
 				case 7:
+					//Adicionar projeto
+					System.out.print("Nome do projeto: ");
+					String nomeProjeto = input.nextLine();
+					System.out.print("Descrição do projeto: ");
+					String descricaoProjeto = input.nextLine();
+					for (Funcionario func : funcionarios) {
+						System.out.println("ID: " + func.getId() + ", Nome: " + func.getNome() + ", Email: "
+								+ func.getEmail() + ", Matrícula: " + func.getMatricula() + ", Departamento: "
+								+ func.getDepartamento());
+					}
+					System.out.print("ID da pessoa responsável: ");
+					int idPessoaResponsavel = Integer.parseInt(input.nextLine());
+
+					// Você pode validar se a pessoa existe antes:
+					Pessoa responsavel = pessoaDAO.buscarPorId(idPessoaResponsavel);
+					if (responsavel == null) {
+					    System.out.println("Pessoa não encontrada. Cadastre a pessoa primeiro.");
+					} else {
+					    Projeto projeto = new Projeto(0, nomeProjeto, descricaoProjeto, idPessoaResponsavel);
+					    projetoDAO.inserir(projeto);
+					    System.out.println("Projeto cadastrado com sucesso!");
+					}
+				    break;
+
+					
+				case 8:
 					// Excluir pessoa
+                    List<Pessoa> pessoasL = pessoaDAO.listar();
+                    for (Pessoa pessoaI : pessoasL) {
+                        System.out.println("ID: " + pessoaI.getId() +
+                                ", Nome: " + pessoaI.getNome() +
+                                ", Email: " + pessoaI.getEmail());
+                    }
 					System.out.print("ID da pessoa a excluir: ");
 					int idPessoaExcluir = input.nextInt();
 					pessoaDAO.deletar(idPessoaExcluir);
 					break;
-					*/
 				case 0:
 					System.out.println("Saindo...");
 					input.close();

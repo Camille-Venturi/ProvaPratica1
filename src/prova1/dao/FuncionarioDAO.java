@@ -24,12 +24,6 @@ public class FuncionarioDAO {
                 }
             }
 
-            // Validar matrícula (exemplo simples)
-            if (!funcionario.getMatricula().matches("F\\d{3}")) {
-                System.err.println("Erro: Matrícula inválida. Use o formato ex:F001.");
-                return;
-            }
-
             String sql = "INSERT INTO funcionario (id, matricula, departamento) VALUES (?, ?, ?)";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, funcionario.getId());
