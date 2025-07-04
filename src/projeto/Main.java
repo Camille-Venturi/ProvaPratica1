@@ -20,22 +20,8 @@ public class Main {
 		List<Funcionario> funcionarios = funcionarioDAO.listar();
 
 		while (true) {
-			System.out.println("===== MENU =====");
-			System.out.println("1. Cadastrar pessoa");
-			System.out.println("2. Listar funcionários");
-			System.out.println("3. Cadastrar funcionário");
-			System.out.println("4. Listar projetos cadastrados");
-			System.out.println("5. Excluir funcionário");
-			System.out.println("6. Excluir projeto");
-			System.out.println("7. Cadastrar projeto");
-			System.out.println("8. Excluir pessoa (só para teste)");
-			System.out.println("0. Sair");
-			System.out.print("Escolha uma opção: ");
-			int opcao = input.nextInt();
-			input.nextLine(); // Limpa buffer
-
 			try {
-				switch (opcao) {
+				switch (menu(input)) {
 				case 1:
 					// Cadastro de Pessoa e Funcionário
 					System.out.print("Nome da pessoa: ");
@@ -73,7 +59,7 @@ public class Main {
 					} else {
 					    System.out.println("Pessoa encontrada: " + pessoa.getNome() + " (ID: " + pessoa.getId() + ")");
 					    System.out.print("Digite o departamento do funcionário: ");
-					    String departamento = input.nextLine();
+					    String departamento = input.next();
 
 					    String matricula = "F" + pessoa.getId();
 
@@ -168,4 +154,22 @@ public class Main {
 			}
 		}
 	}
+	
+	public static int menu(Scanner input) {
+		System.out.println("\n.............MENU..............");
+		System.out.println("1. Cadastrar pessoa");
+		System.out.println("2. Listar funcionários");
+		System.out.println("3. Cadastrar funcionário");
+		System.out.println("4. Listar projetos cadastrados");
+		System.out.println("5. Excluir funcionário");
+		System.out.println("6. Excluir projeto");
+		System.out.println("7. Cadastrar projeto");
+		System.out.println("8. Excluir pessoa (só para teste)");
+		System.out.println("0. Sair");
+		System.out.print("Escolha uma opção: ");
+		int opcao = input.nextInt();
+		input.nextLine(); 
+		return opcao;
+	}
+	
 }
