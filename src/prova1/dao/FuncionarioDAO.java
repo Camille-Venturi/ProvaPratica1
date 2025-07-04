@@ -35,7 +35,6 @@ public class FuncionarioDAO {
         }
     }
 
-    // Regra 3: Proibir exclusão de funcionário vinculado a projeto
     public void deletar(int idFuncionario) throws SQLException {
         try (Connection conn = ConnectionFactory.getConnection()) {
             String sqlCheck = "SELECT * FROM projeto WHERE id_funcionario = ?";
