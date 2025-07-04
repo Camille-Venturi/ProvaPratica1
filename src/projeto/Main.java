@@ -31,6 +31,7 @@ public class Main {
 					String email = input.nextLine();
 					Pessoa p = new Pessoa(0, nome, email);
 					pessoaDAO.inserir(p);
+					break;
 				
 				case 2:
 					// Cadastrar funcionario 
